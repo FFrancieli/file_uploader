@@ -26,14 +26,14 @@ public class FileService {
         this.repository = repository;
     }
 
-    public ResponseEntity uploadFile(MultipartFile file) throws IOException {
+    public ResponseEntity uploadFile(MultipartFile file, Long userId) throws IOException {
         try {
             Path path = fileUploader.upload(file, UPLOAD_TO_FOLDER);
-            FileEntity entity = new FileEntity(file.getOriginalFilename(), path.getParent().toString(), UploadStatus.COMPLETE);
+            FileEntity entity = new FileEntity(file.getOriginalFilename(), path.getParent().toString(), UploadStatus.COMPLETE, userId);
             repository.save(entity);
 
         } catch (IOException exception) {
-            FileEntity entity = new FileEntity(file.getOriginalFilename(), "", UploadStatus.FAILED);
+            FileEntity entity = new FileEntity(file.getOriginalFilename(), "", UploadStatus.FAILED, userId);
             repository.save(entity);
         }
 

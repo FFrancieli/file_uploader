@@ -19,10 +19,11 @@ public class FileEntity {
     @Column(name = "upload_status")
     private UploadStatus uploadStatus;
 
-    public FileEntity(String name, String location, UploadStatus status) {
+    public FileEntity(String name, String location, UploadStatus status, Long userId) {
         this.name = name;
         this.location = location;
         this.uploadStatus = status;
+        this.userId = userId;
     }
 
     public String getName() {

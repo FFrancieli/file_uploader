@@ -28,7 +28,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class FileServiceTest {
 
     public static final String FILE_NAME = "file.txt";
-    private final String UPLOAD_TO_FOLDER = System.getProperty("user.dir") + "/tmp" ;
+    private final String UPLOAD_TO_FOLDER = System.getProperty("user.dir") + "/tmp";
+    private final Long USER_ID = 1L;
 
     FileService service;
     MockMultipartFile fileToUpload;
@@ -54,14 +55,14 @@ public class FileServiceTest {
 
     @Test
     public void returnsHttpStaus200WhenFileIsUploaded() throws Exception {
-        ResponseEntity response = service.uploadFile(fileToUpload);
+        ResponseEntity response = service.uploadFile(fileToUpload, USER_ID);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
     public void uploadsFile() throws Exception {
-        service.uploadFile(fileToUpload);
+        service.uploadFile(fileToUpload, USER_ID);
 
         verify(fileUploader, times(1)).upload(any(MultipartFile.class), anyString());
     }
@@ -70,7 +71,7 @@ public class FileServiceTest {
     public void uploadsCorrectFile() throws Exception {
         ArgumentCaptor<MultipartFile> fileCaptor = ArgumentCaptor.forClass(MultipartFile.class);
 
-        service.uploadFile(fileToUpload);
+        service.uploadFile(fileToUpload, USER_ID);
 
         verify(fileUploader, times(1)).upload(fileCaptor.capture(), anyString());
 
@@ -81,7 +82,7 @@ public class FileServiceTest {
     public void uploadsFileToCorrectDirectory() throws Exception {
         ArgumentCaptor<String> directoryCaptor = ArgumentCaptor.forClass(String.class);
 
-        service.uploadFile(fileToUpload);
+        service.uploadFile(fileToUpload, USER_ID);
 
         verify(fileUploader, times(1)).upload(any(MultipartFile.class), directoryCaptor.capture());
 
@@ -90,7 +91,7 @@ public class FileServiceTest {
 
     @Test
     public void savesFileInformationOnDatabase() throws Exception {
-        service.uploadFile(fileToUpload);
+        service.uploadFile(fileToUpload, USER_ID);
 
         verify(repository, times(1)).save(any(FileEntity.class));
     }
@@ -101,7 +102,7 @@ public class FileServiceTest {
 
         ArgumentCaptor<FileEntity> entityCaptor = ArgumentCaptor.forClass(FileEntity.class);
 
-        service.uploadFile(fileToUpload);
+        service.uploadFile(fileToUpload, USER_ID);
 
         verify(repository, times(1)).save(entityCaptor.capture());
 
@@ -116,7 +117,7 @@ public class FileServiceTest {
 
         ArgumentCaptor<FileEntity> entityCaptor = ArgumentCaptor.forClass(FileEntity.class);
 
-        service.uploadFile(fileToUpload);
+        service.uploadFile(fileToUpload, USER_ID);
 
         verify(repository, times(1)).save(entityCaptor.capture());
 
@@ -132,7 +133,7 @@ public class FileServiceTest {
 
         ArgumentCaptor<FileEntity> entityCaptor = ArgumentCaptor.forClass(FileEntity.class);
 
-        service.uploadFile(fileToUpload);
+        service.uploadFile(fileToUpload, USER_ID);
 
         verify(repository, times(1)).save(entityCaptor.capture());
 

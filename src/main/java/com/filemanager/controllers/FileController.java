@@ -24,8 +24,8 @@ public class FileController {
 
     @ResponseStatus(OK)
     @PostMapping
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-        ResponseEntity response = service.uploadFile(file);
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("userId") Long userId) throws IOException {
+        ResponseEntity response = service.uploadFile(file, userId);
 
         return new ResponseEntity(response.getBody(), HttpStatus.OK);
     }
