@@ -17,7 +17,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Set;
 
+import static java.util.Collections.singleton;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -140,5 +142,38 @@ public class FileServiceTest {
         FileEntity savedInformation = entityCaptor.getValue();
 
         assertThat(savedInformation.getUploadStatus(), is(UploadStatus.FAILED));
+    }
+
+    @Test
+    public void getsFileInformationFromDatabase() throws Exception {
+        Iterable<FileEntity> entities = singleton(new FileEntity("name", "some/folder", UploadStatus.COMPLETE, 1L));
+
+        when(repository.findAll()).thenReturn(entities);
+
+        service.getAllFiles();
+
+        verify(repository, times(1)).findAll();
+    }
+
+    @Test
+    public void returnsHttpStatus200WhenFileInformationIsFound() throws Exception {
+        Iterable<FileEntity> entities = singleton(new FileEntity("name", "some/folder", UploadStatus.COMPLETE, 1L));
+
+        when(repository.findAll()).thenReturn(entities);
+
+        ResponseEntity<Set> response = service.getAllFiles();
+
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    @Test
+    public void returnsResponseListWhenThereIsFileInformationOnDatabase() throws Exception {
+        Iterable<FileEntity> entities = singleton(new FileEntity("name", "some/folder", UploadStatus.COMPLETE, 1L));
+
+        when(repository.findAll()).thenReturn(entities);
+
+        ResponseEntity<Set> response = service.getAllFiles();
+
+        assertThat(response.getBody().size(), is(1));
     }
 }

@@ -37,4 +37,12 @@ public class FileEntity {
     public UploadStatus getUploadStatus() {
         return uploadStatus;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
 }

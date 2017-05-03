@@ -2,6 +2,7 @@ package com.filemanager.services;
 
 import com.filemanager.input.FileUploader;
 import com.filemanager.models.FileEntity;
+import com.filemanager.models.RetrieveFileResponse;
 import com.filemanager.models.UploadStatus;
 import com.filemanager.repositories.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class FileService {
@@ -38,5 +41,18 @@ public class FileService {
         }
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    public ResponseEntity<Set> getAllFiles(){
+        Iterable<FileEntity> response = repository.findAll();
+        return new ResponseEntity<>(entityToResponseList(response), HttpStatus.OK);
+    }
+
+    private Set<RetrieveFileResponse> entityToResponseList(Iterable<FileEntity> entities){
+        Set<RetrieveFileResponse> response = new HashSet<>();
+
+        entities.forEach(entity -> response.add(new RetrieveFileResponse(entity)));
+
+        return response;
     }
 }

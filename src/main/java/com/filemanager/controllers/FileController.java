@@ -29,4 +29,12 @@ public class FileController {
 
         return new ResponseEntity(response.getBody(), HttpStatus.OK);
     }
+
+    @ResponseStatus(OK)
+    @PostMapping
+    public ResponseEntity<String> getAllFiles() throws IOException {
+        ResponseEntity response = service.getAllFiles();
+
+        return new ResponseEntity(response.getBody(), HttpStatus.OK);
+    }
 }
