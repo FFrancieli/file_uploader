@@ -27,12 +27,16 @@ public class FileService {
     }
 
     public ResponseEntity uploadFile(MultipartFile file) throws IOException {
-        Path path = fileUploader.upload(file, UPLOAD_TO_FOLDER);
+        try {
+            Path path = fileUploader.upload(file, UPLOAD_TO_FOLDER);
+            FileEntity entity = new FileEntity(file.getOriginalFilename(), path.getParent().toString(), UploadStatus.COMPLETE);
+            repository.save(entity);
 
-        FileEntity entity = new FileEntity(file.getOriginalFilename(), path.getParent().toString(), UploadStatus.COMPLETE);
+        } catch (IOException exception) {
+            FileEntity entity = new FileEntity(file.getOriginalFilename(), "", UploadStatus.FAILED);
+            repository.save(entity);
+        }
 
-        repository.save(entity);
-
-        return new ResponseEntity("uploaded", HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

@@ -2,6 +2,7 @@ package com.filemanager.services;
 
 import com.filemanager.input.FileUploader;
 import com.filemanager.models.FileEntity;
+import com.filemanager.models.UploadStatus;
 import com.filemanager.repositories.FileRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Paths;
 
 import static org.hamcrest.core.Is.is;
@@ -106,5 +108,36 @@ public class FileServiceTest {
         FileEntity savedInformation = entityCaptor.getValue();
         assertThat(savedInformation.getName(), is(FILE_NAME));
         assertThat(savedInformation.getLocation(), is(UPLOAD_TO_FOLDER));
+    }
+
+    @Test
+    public void UploadStatusIsCompletedWhenFileIsUploaded() throws Exception {
+        FileService service = new FileService(new FileUploader(), repository);
+
+        ArgumentCaptor<FileEntity> entityCaptor = ArgumentCaptor.forClass(FileEntity.class);
+
+        service.uploadFile(fileToUpload);
+
+        verify(repository, times(1)).save(entityCaptor.capture());
+
+        FileEntity savedInformation = entityCaptor.getValue();
+
+        assertThat(savedInformation.getUploadStatus(), is(UploadStatus.COMPLETE));
+    }
+
+    @Test
+    public void UploadStatusIsFailedWhenFileUploadFails() throws Exception {
+        when(fileUploader.upload(fileToUpload, UPLOAD_TO_FOLDER)).thenThrow(IOException.class);
+        FileService service = new FileService(fileUploader, repository);
+
+        ArgumentCaptor<FileEntity> entityCaptor = ArgumentCaptor.forClass(FileEntity.class);
+
+        service.uploadFile(fileToUpload);
+
+        verify(repository, times(1)).save(entityCaptor.capture());
+
+        FileEntity savedInformation = entityCaptor.getValue();
+
+        assertThat(savedInformation.getUploadStatus(), is(UploadStatus.FAILED));
     }
 }

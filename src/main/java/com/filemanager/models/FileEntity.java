@@ -32,4 +32,8 @@ public class FileEntity {
     public String getLocation() {
         return location;
     }
+
+    public UploadStatus getUploadStatus() {
+        return uploadStatus;
+    }
 }
