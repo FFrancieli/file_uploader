@@ -2,6 +2,7 @@ package com.filemanager.services;
 
 import com.filemanager.input.FileUploader;
 import com.filemanager.models.FileEntity;
+import com.filemanager.models.UploadStatus;
 import com.filemanager.repositories.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class FileService {
     public ResponseEntity uploadFile(MultipartFile file) throws IOException {
         Path path = fileUploader.upload(file, UPLOAD_TO_FOLDER);
 
-        FileEntity entity = new FileEntity(file.getOriginalFilename(), path.getParent().toString());
+        FileEntity entity = new FileEntity(file.getOriginalFilename(), path.getParent().toString(), UploadStatus.COMPLETE);
 
         repository.save(entity);
 

@@ -15,9 +15,14 @@ public class FileEntity {
     @Column(name = "user_id")
     private Long userId;
 
-    public FileEntity(String name, String location) {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "upload_status")
+    private UploadStatus uploadStatus;
+
+    public FileEntity(String name, String location, UploadStatus status) {
         this.name = name;
         this.location = location;
+        this.uploadStatus = status;
     }
 
     public String getName() {
